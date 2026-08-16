@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Energy Master — Year 9 Relief Mission</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;color:#182033;background:#eef2f8}
+.app{max-width:1100px;margin:auto;padding:18px}.hero{background:linear-gradient(135deg,#30245f,#7054d6,#2e95e5);color:white;border-radius:28px;padding:28px;box-shadow:0 16px 40px #24304b33}
+.hero h1{font-size:clamp(42px,8vw,76px);line-height:.85;margin:10px 0}.hero p{max-width:720px}.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{padding:7px 11px;background:#ffffff20;border-radius:99px;font-size:12px;font-weight:bold}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.stat{padding:9px 14px;background:#ffffff18;border-radius:14px}.stat small{display:block;font-size:10px;opacity:.7}.stat b{font-size:20px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}nav button{border:0;background:white;border-radius:12px;padding:11px 14px;font-weight:bold;cursor:pointer}nav button.active{background:#7054d6;color:white}
+.page{display:none}.page.active{display:block}.card{background:white;border-radius:24px;padding:24px;box-shadow:0 12px 30px #24304b20}.title{margin:0 0 5px;font-size:28px}.muted{color:#697586}.btn{border:0;border-radius:12px;padding:11px 16px;font-weight:bold;cursor:pointer}.primary{background:#7054d6;color:white}.secondary{background:#e9edf5}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:13px}.energy{color:white;border-radius:20px;padding:18px;min-height:175px;box-shadow:0 8px 20px #24304b25}.energy .icon{font-size:38px}.energy h3{margin:7px 0}.energy p{font-size:14px}.e1{background:#347fd1}.e2{background:#8055c5}.e3{background:#df598d}.e4{background:#db832c}.e5{background:#d85449}.e6{background:#278d85}.e7{background:#dca82a}.e8{background:#4e78b9}.e9{background:#565d69}
+.flashgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}.flash{min-height:185px;cursor:pointer}.flash details{min-height:185px;background:white;border:3px solid #ddd6ff;border-radius:20px;padding:20px;box-shadow:0 8px 20px #24304b18}.flash summary{min-height:125px;list-style:none;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;font-weight:bold;cursor:pointer}.flash summary::-webkit-details-marker{display:none}.flash summary .icon{font-size:42px}.flash .answer{margin-top:15px;padding-top:12px;border-top:1px solid #e3e6ee;color:#4d3aa2}
+.question{font-size:20px;font-weight:bold;background:#f3efff;border-radius:18px;padding:20px;margin:16px 0}.choices{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.choice{border:2px solid #dce2eb;background:white;border-radius:13px;padding:14px;text-align:left;font-weight:bold;cursor:pointer}.choice.correct{background:#e9faef;border-color:#39b978}.choice.wrong{background:#ffeded;border-color:#d95757}.feedback{min-height:48px;background:#f2f4f7;border-radius:12px;padding:12px;margin-top:12px}.feedback.good{background:#e9faef}.feedback.bad{background:#ffeded}
+.sortitems{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0}.item{padding:10px 12px;background:white;border:2px solid #dce2eb;border-radius:11px;font-weight:bold;cursor:pointer}.item.selected{background:#f0edff;border-color:#7054d6}.bins{display:grid;grid-template-columns:1fr 1fr;gap:14px}.bin{min-height:190px;border:3px dashed #bdc6d5;border-radius:18px;padding:14px;background:#fafbfe}.bin h3{margin-top:0}.bin .item{display:block;margin:7px 0}.scene{height:380px;border-radius:22px;background:linear-gradient(#d8f2ff 0 55%,#9bce7e 55%);position:relative;overflow:hidden;border:3px solid #d6ddea}.object{position:absolute;border:0;background:white;border-radius:15px;padding:10px;font-size:34px;box-shadow:0 6px 15px #24304b33;cursor:pointer}.object:hover{transform:scale(1.08)}.info{background:#f2f4f7;padding:14px;border-radius:14px;margin-top:12px}
+.chain{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:18px;background:#f0edff;border-radius:18px}.slot{min-width:135px;min-height:48px;border:2px dashed #9d92d9;border-radius:10px;background:white;padding:10px;text-align:center;font-weight:bold}.token{border:2px solid #dce2eb;background:white;border-radius:11px;padding:10px;margin:5px;font-weight:bold;cursor:pointer}.token.used{opacity:.35}
+.result{text-align:center;padding:25px}.bigscore{font-size:65px;font-weight:900;color:#7054d6}
+@media(max-width:700px){.choices,.bins{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="hero">
+<div class="chips"><span class="chip">YEAR 9 SCIENCE</span><span class="chip">RELIEF</span><span class="chip">50–60 MINUTES</span></div>
+<h1>ENERGY<br>MASTER</h1>
+<p>Complete the missions. Learn it, remember it, sort it, investigate it, build it and defeat the Energy Boss.</p>
+<div class="stats"><div class="stat"><small>POINTS</small><b id="score">0</b></div><div class="stat"><small>STREAK</small><b id="streak">0</b></div><div class="stat"><small>RANK</small><b id="rank">ROOKIE</b></div><div class="stat"><small>MISSIONS</small><b id="missionCount">0/7</b></div></div>
+</header>
+
+<nav>
+<button class="active" data-page="learn">🧠 Learn</button>
+<button data-page="cards">🃏 Recall</button>
+<button data-page="sort">🎯 Sort</button>
+<button data-page="hunt">🏠 Hunt</button>
+<button data-page="transfer">🔄 Transfer</button>
+<button data-page="build">🧩 Build</button>
+<button data-page="detective">🕵️ Detective</button>
+<button data-page="boss">🏆 Boss</button>
+</nav>
+
+<section id="learn" class="page active"><div class="card">
+<h2 class="title">🧠 Mission 1 — Energy Academy</h2><p class="muted">Study the nine energy types. The memory cue is the bit you want to remember.</p>
+<div class="grid">
+<div class="energy e1"><div class="icon">🏃</div><h3>Kinetic</h3><p>Energy of movement.</p><b>MOVING → KINETIC</b></div>
+<div class="energy e2"><div class="icon">🏔️</div><h3>Gravitational potential</h3><p>Stored because of height or position.</p><b>HIGHER → MORE GPE</b></div>
+<div class="energy e3"><div class="icon">🪀</div><h3>Elastic potential</h3><p>Stored in stretched or compressed objects.</p><b>STRETCHED / SQUASHED</b></div>
+<div class="energy e4"><div class="icon">🍎</div><h3>Chemical</h3><p>Stored in chemical bonds.</p><b>FOOD / FUEL / BATTERY</b></div>
+<div class="energy e5"><div class="icon">🔥</div><h3>Thermal</h3><p>Associated with particle movement in matter.</p><b>HOTTER → MORE THERMAL</b></div>
+<div class="energy e6"><div class="icon">⚡</div><h3>Electrical</h3><p>Transferred by moving electric charges.</p><b>MOVING CHARGES</b></div>
+<div class="energy e7"><div class="icon">☀️</div><h3>Light / radiant</h3><p>Transferred by electromagnetic waves.</p><b>ELECTROMAGNETIC WAVES</b></div>
+<div class="energy e8"><div class="icon">🔊</div><h3>Sound</h3><p>Transferred by vibrations through a medium.</p><b>VIBRATIONS → SOUND</b></div>
+<div class="energy e9"><div class="icon">☢️</div><h3>Nuclear</h3><p>Stored in the nucleus of an atom.</p><b>ATOMIC NUCLEUS</b></div>
+</div>
+<p style="background:#f0edff;padding:15px;border-radius:15px"><b>⭐ Master memory:</b> Ask: Is it moving? Is it stored? Where is it stored? How is energy transferred?</p>
+<button class="btn primary" id="learnDone">Mission complete →</button>
+</div></section>
+
+<section id="cards" class="page"><div class="card">
+<h2 class="title">🃏 Mission 2 — Recall Lab</h2><p class="muted">These are real clickable reveal cards. Before opening one, try to say the definition from memory.</p>
+<div class="flashgrid">
+<div class="flash"><details><summary><div class="icon">🏃</div>KINETIC<br><small>CLICK TO REVEAL</small></summary><div class="answer">Energy of movement.<br><b>Moving → kinetic</b></div></details></div>
+<div class="flash"><details><summary><div class="icon">🏔️</div>GRAVITATIONAL<br><small>CLICK TO REVEAL</small></summary><div class="answer">Stored because of height.<br><b>Higher → more GPE</b></div></details></div>
+<div class="flash"><details><summary><div class="icon">🪀</div>ELASTIC<br><small>CLICK TO REVEAL</small></summary><div class="answer">Stored when stretched/compressed.<br><b>Stretch / squash</b></div></details></div>
+<div class="flash"><details><summary><div class="icon">🍎</div>CHEMICAL<br><small>CLICK TO REVEAL</small></summary><div class="answer">Stored in chemical bonds.<br><b>Food / fuel / battery</b></div></details></div>
+<div class="flash"><details><summary><div class="icon">🔥</div>THERMAL<br><small>CLICK TO REVEAL</small></summary><div class="answer">Associated with particle motion.<br><b>Hotter → more thermal</b></div></details></div>
+<div class="flash"><details><summary><div class="icon">⚡</div>ELECTRICAL<br><small>CLICK TO REVEAL</small></summary><div class="answer">Transferred by moving charges.<br><b>Moving charges</b></div></details></div>
+<div class="flash"><details><summary><div class="icon">☀️</div>RADIANT<br><small>CLICK TO REVEAL</small></summary><div class="answer">Transferred by electromagnetic waves.<br><b>Sunlight</b></div></details></div>
+<div class="flash"><details><summary><div class="icon">🔊</div>SOUND<br><small>CLICK TO REVEAL</small></summary><div class="answer">Transferred by vibrations.<br><b>Vibrations → sound</b></div></details></div>
+<div class="flash"><details><summary><div class="icon">☢️</div>NUCLEAR<br><small>CLICK TO REVEAL</small></summary><div class="answer">Stored in the atomic nucleus.<br><b>Nucleus → nuclear</b></div></details></div>
+<div class="flash"><details><summary><div class="icon">🔋</div>BATTERY<br><small>WHAT ENERGY?</small></summary><div class="answer">A battery stores <b>chemical</b> energy.</div></details></div>
+<div class="flash"><details><summary><div class="icon">⚽</div>MOVING BALL<br><small>WHAT ENERGY?</small></summary><div class="answer">A moving ball has <b>kinetic</b> energy.</div></details></div>
+<div class="flash"><details><summary><div class="icon">📚</div>HIGH SHELF<br><small>WHAT ENERGY?</small></summary><div class="answer">A high object has <b>gravitational potential</b> energy.</div></details></div>
+</div>
+<button class="btn primary" id="cardsDone">Mission complete →</button>
+</div></section>
+
+<section id="sort" class="page"><div class="card">
+<h2 class="title">🎯 Mission 3 — Energy Sorting Lab</h2><p class="muted">Click the item, then click the correct category. Complete all 12.</p>
+<div class="sortitems" id="sortItems"></div><div class="bins"><div class="bin" id="stored"><h3>📦 STORED ENERGY</h3></div><div class="bin" id="moving"><h3>⚡ MOVING / TRANSFERRED</h3></div></div><div class="feedback" id="sortFeedback">Choose an item.</div><button class="btn primary" id="sortNext">Next →</button>
+</div></section>
+
+<section id="hunt" class="page"><div class="card">
+<h2 class="title">🏠 Mission 4 — Energy Hunt</h2><p class="muted">Click all 8 objects in the scene. Read the explanation for each.</p>
+<div class="scene">
+<button class="object" style="left:7%;top:15%" data-n="Lamp" data-e="Light / radiant" data-t="Electrical energy becomes light and thermal energy.">💡</button>
+<button class="object" style="left:42%;top:14%" data-n="Kettle" data-e="Thermal" data-t="Electrical energy heats the water.">🫖</button>
+<button class="object" style="left:76%;top:15%" data-n="Speaker" data-e="Sound" data-t="Electrical energy causes vibrations and sound.">🔊</button>
+<button class="object" style="left:18%;top:63%" data-n="Football" data-e="Kinetic" data-t="A moving football has kinetic energy.">⚽</button>
+<button class="object" style="left:47%;top:63%" data-n="Food" data-e="Chemical" data-t="Food stores chemical energy.">🍎</button>
+<button class="object" style="left:78%;top:63%" data-n="Battery" data-e="Chemical" data-t="A battery stores chemical energy.">🔋</button>
+<button class="object" style="left:32%;top:40%" data-n="Spring toy" data-e="Elastic potential" data-t="A compressed or stretched spring stores elastic potential energy.">🪀</button>
+<button class="object" style="left:62%;top:40%" data-n="Book on shelf" data-e="Gravitational potential" data-t="Height gives the book gravitational potential energy.">📚</button>
+</div><div class="info" id="huntInfo">Click an object.</div><p class="muted" id="huntCount">Investigated: 0 / 8</p><button class="btn primary" id="huntDone">Mission complete →</button>
+</div></section>
+
+<section id="transfer" class="page"><div class="card">
+<h2 class="title">🔄 Mission 5 — Energy Transfer Lab</h2><p class="muted">Choose the complete energy pathway. 12 systems.</p><div class="question" id="transferQ"></div><div class="choices" id="transferChoices"></div><div class="feedback" id="transferFeedback"></div><button class="btn primary" id="transferNext">Next →</button>
+</div></section>
+
+<section id="build" class="page"><div class="card">
+<h2 class="title">🧩 Mission 6 — Energy Chain Builder</h2><p class="muted">Click the correct token to fill the missing energy type.</p><div class="question" id="buildQ"></div><div class="chain"><div class="slot" id="chainStart">START</div><span>→</span><div class="slot" id="chainSlot">?</div><span>→</span><div class="slot">OUTPUT</div></div><div id="tokens" style="margin:14px 0"></div><div class="feedback" id="buildFeedback"></div><button class="btn secondary" id="clearBuild">Clear</button> <button class="btn primary" id="checkBuild">Check</button> <button class="btn primary" id="buildNext">Next →</button>
+</div></section>
+
+<section id="detective" class="page"><div class="card">
+<h2 class="title">🕵️ Mission 7 — Energy Detective</h2><p class="muted">Read carefully. Choose the energy the question is actually asking about.</p><div class="question" id="detectiveQ"></div><div class="choices" id="detectiveChoices"></div><div class="feedback" id="detectiveFeedback"></div><button class="btn primary" id="detectiveNext">Next →</button>
+</div></section>
+
+<section id="boss" class="page"><div class="card">
+<h2 class="title">🏆 ENERGY BOSS BATTLE</h2><p class="muted">15 final mixed questions. No hints.</p><div class="question" id="bossQ"></div><div class="choices" id="bossChoices"></div><div class="feedback" id="bossFeedback"></div><button class="btn primary" id="bossNext">Next battle →</button>
+</div></section>
+</div>
+
+<script>
+const E=["Kinetic","Gravitational potential","Elastic potential","Chemical","Thermal","Electrical","Light / radiant","Sound","Nuclear"];
+const CLASS=[
+["A moving football","Moving","Kinetic"],["A book high on a shelf","Stored","Gravitational potential"],["Food","Stored","Chemical"],["A stretched bow","Stored","Elastic potential"],["Sunlight","Moving","Light / radiant"],["A hot cup of tea","Stored","Thermal"],["Current in a wire","Moving","Electrical"],["Sound from a speaker","Moving","Sound"],["Petrol in a tank","Stored","Chemical"],["Water high behind a dam","Stored","Gravitational potential"],["A moving car","Moving","Kinetic"],["A compressed spring","Stored","Elastic potential"]];
+const T=[
+["Torch","Chemical → electrical → light + thermal","Chemical energy starts in the battery."],["Runner","Chemical → kinetic + thermal","Food provides chemical energy."],["Roller coaster","Gravitational potential → kinetic","Height energy becomes movement."],["Kettle","Electrical → thermal","Electrical energy heats the water."],["Solar fan","Light / radiant → electrical → kinetic","Sunlight becomes electrical energy then movement."],["Guitar","Elastic potential → sound","Stored energy produces vibrations."],["Petrol car","Chemical → kinetic","Fuel energy becomes movement."],["Speaker","Electrical → sound","Electrical energy causes vibrations."],["Hydroelectric dam","Gravitational potential → kinetic → electrical","High water moves a turbine."],["Toaster","Electrical → thermal","Electrical energy heats the element."],["Jumping","Chemical → kinetic + thermal","Food energy is transferred into movement."],["Solar calculator","Light / radiant → electrical","Radiant energy becomes electrical energy."]];
+const D=[
+["A book is lifted onto a high shelf. Which energy increases?","Gravitational potential","Height is the clue."],["A runner eats before running. What is the original stored energy?","Chemical","Food stores chemical energy."],["A torch shines. What useful output lets you see?","Light / radiant","Light is the useful output."],["A roller coaster is moving quickly. What energy is associated with motion?","Kinetic","Movement means kinetic energy."],["A spring is compressed. What is stored?","Elastic potential","Compression stores elastic energy."],["A kettle makes water hotter. What energy increases?","Thermal","The water gains thermal energy."],["A speaker makes music. What energy reaches your ears?","Sound","Vibrations transfer sound."],["Sunlight reaches a solar panel. What energy arrives?","Light / radiant","Sunlight is radiant energy."],["High water is held behind a dam. What energy is initially stored?","Gravitational potential","Height stores GPE."],["Petrol sits in a tank. What energy is stored?","Chemical","Fuel stores chemical energy."],["A ball is flying through the air. What energy does it have because it is moving?","Kinetic","Movement is the clue."],["A stretched elastic band is held. What energy is stored?","Elastic potential","Stretching stores energy."]];
+const B=T.slice(0,8).concat(D.slice(0,7));
+let score=0,streak=0,done=0,sortI=0,sortSelected=false,hunted=0,tI=0,bI=0,dI=0,boI=0,buildChoice="";
+function update(){if(score<0)score=0;document.getElementById("score").textContent=score;document.getElementById("streak").textContent=streak;document.getElementById("missionCount").textContent=done+"/7";document.getElementById("rank").textContent=score>=300?"LEGEND":score>=200?"EXPERT":score>=100?"APPRENTICE":"ROOKIE"}
+function good(msg,el,p){score+=p||10;streak++;update();el.className="feedback good";el.innerHTML="✅ <b>Correct!</b> "+msg}
+function bad(a,msg,el){score-=2;streak=0;update();el.className="feedback bad";el.innerHTML="💡 <b>Not quite.</b> Answer: <b>"+a+"</b>. "+msg}
+function mark(){done++;update()}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.page).classList.add("active")});
+document.getElementById("learnDone").onclick=()=>{mark();document.querySelector('[data-page="cards"]').click()};
+document.getElementById("cardsDone").onclick=()=>{mark();document.querySelector('[data-page="sort"]').click()};
+
+function renderSort(){let q=CLASS[sortI];sortSelected=false;document.getElementById("sortItems").innerHTML='<div class="item">'+q[0]+"</div>";document.getElementById("sortFeedback").className="feedback";document.getElementById("sortFeedback").textContent="Click the correct category.";document.querySelectorAll(".bin").forEach(bin=>bin.onclick=()=>{let want=bin.id==="stored"?"Stored":"Moving";if(want===q[1]){bin.innerHTML+="<div class='item' style='border-color:#39b978'>"+q[0]+"</div>";sortSelected=true;good("This is "+q[2]+" energy.",document.getElementById("sortFeedback"),10)}else bad(q[1],"Think about whether the energy is stored or being transferred/associated with movement or waves.",document.getElementById("sortFeedback"))})}
+renderSort();
+document.getElementById("sortNext").onclick=()=>{if(!sortSelected)return;sortI++;if(sortI===CLASS.length){mark();document.querySelector('[data-page="hunt"]').click()}else renderSort()};
+
+document.querySelectorAll(".object").forEach(o=>o.onclick=()=>{o.style.outline="4px solid #39b978";hunted++;document.getElementById("huntInfo").innerHTML="<b>"+o.dataset.n+"</b> — "+o.dataset.e+"<br>"+o.dataset.t;document.getElementById("huntCount").textContent="Investigated: "+Math.min(hunted,8)+" / 8"});
+document.getElementById("huntDone").onclick=()=>{if(hunted>=8){mark();document.querySelector('[data-page="transfer"]').click()}else document.getElementById("huntInfo").innerHTML="<b>Keep going!</b> Find all 8 objects."};
+
+function options(ans){let p=E.filter(x=>x!==ans).sort(()=>Math.random()-.5).slice(0,3);return [ans,...p].sort(()=>Math.random()-.5)}
+function transferRender(){let q=T[tI];document.getElementById("transferQ").textContent="SYSTEM "+(tI+1)+"/12 — "+q[0];let opts=[q[1],...T.filter(x=>x[1]!==q[1]).sort(()=>Math.random()-.5).slice(0,3).map(x=>x[1])].sort(()=>Math.random()-.5);document.getElementById("transferChoices").innerHTML=opts.map(x=>'<button class="choice">'+x+"</button>").join("");document.getElementById("transferFeedback").className="feedback";document.getElementById("transferFeedback").textContent="Choose the complete pathway.";document.querySelectorAll("#transferChoices .choice").forEach((b)=>b.onclick=()=>{document.querySelectorAll("#transferChoices .choice").forEach(x=>x.disabled=true);if(b.textContent===q[1]){b.classList.add("correct");good(q[2],document.getElementById("transferFeedback"),15)}else{b.classList.add("wrong");bad(q[1],q[2],document.getElementById("transferFeedback"))}})}
+transferRender();
+document.getElementById("transferNext").onclick=()=>{if(tI<11){tI++;transferRender()}else{mark();document.querySelector('[data-page="build"]').click()}};
+
+const chains=[["Torch","Chemical","Electrical"],["Roller coaster","Gravitational potential","Kinetic"],["Bow","Elastic potential","Kinetic"],["Solar panel","Light / radiant","Electrical"],["Runner","Chemical","Kinetic"],["Kettle","Electrical","Thermal"],["Guitar","Elastic potential","Sound"],["Dam","Gravitational potential","Electrical"],["Car","Chemical","Kinetic"],["Heater","Electrical","Thermal"],["Solar fan","Light / radiant","Kinetic"],["Body warming","Chemical","Thermal"]];
+function buildRender(){let q=chains[bI];buildChoice="";document.getElementById("buildQ").textContent="CHAIN "+(bI+1)+"/12 — "+q[0]+": "+q[1]+" → ?";document.getElementById("chainStart").textContent=q[1];document.getElementById("chainSlot").textContent="?";let opts=options(q[2]);document.getElementById("tokens").innerHTML=opts.map(x=>'<button class="token">'+x+"</button>").join("");document.querySelectorAll(".token").forEach(x=>x.onclick=()=>{buildChoice=x.textContent;document.querySelectorAll(".token").forEach(t=>t.classList.remove("used"));x.classList.add("used");document.getElementById("chainSlot").textContent=x.textContent});document.getElementById("buildFeedback").className="feedback";document.getElementById("buildFeedback").textContent="Select a token, then check it."}
+buildRender();
+document.getElementById("checkBuild").onclick=()=>{let q=chains[bI];if(!buildChoice)return;if(buildChoice===q[2])good("Correct missing link!",document.getElementById("buildFeedback"),15);else bad(q[2],"Follow the energy pathway carefully.",document.getElementById("buildFeedback"))};
+document.getElementById("clearBuild").onclick=()=>{buildChoice="";document.getElementById("chainSlot").textContent="?"};
+document.getElementById("buildNext").onclick=()=>{if(bI<11){bI++;buildRender()}else{mark();document.querySelector('[data-page="detective"]').click()}};
+
+function detectiveRender(){let q=D[dI];document.getElementById("detectiveQ").textContent="CASE "+(dI+1)+"/12 — "+q[0];document.getElementById("detectiveChoices").innerHTML=options(q[1]).map(x=>'<button class="choice">'+x+"</button>").join("");document.getElementById("detectiveFeedback").className="feedback";document.getElementById("detectiveFeedback").textContent="Choose carefully.";document.querySelectorAll("#detectiveChoices .choice").forEach(b=>b.onclick=()=>{document.querySelectorAll("#detectiveChoices .choice").forEach(x=>x.disabled=true);if(b.textContent===q[1]){b.classList.add("correct");good(q[2],document.getElementById("detectiveFeedback"),15)}else{b.classList.add("wrong");bad(q[1],q[2],document.getElementById("detectiveFeedback"))}})}
+detectiveRender();
+document.getElementById("detectiveNext").onclick=()=>{if(dI<11){dI++;detectiveRender()}else{mark();document.querySelector('[data-page="boss"]').click()}};
+
+function bossRender(){let q=B[boI],ans=q[1];document.getElementById("bossQ").textContent="BOSS "+(boI+1)+"/15 — "+q[0];document.getElementById("bossChoices").innerHTML=options(ans).map(x=>'<button class="choice">'+x+"</button>").join("");document.getElementById("bossFeedback").className="feedback";document.getElementById("bossFeedback").textContent="No hints. Commit to an answer.";document.querySelectorAll("#bossChoices .choice").forEach(b=>b.onclick=()=>{document.querySelectorAll("#bossChoices .choice").forEach(x=>x.disabled=true);if(b.textContent===ans){b.classList.add("correct");good(q[2],document.getElementById("bossFeedback"),20)}else{b.classList.add("wrong");bad(ans,q[2],document.getElementById("bossFeedback"))}})}
+bossRender();
+document.getElementById("bossNext").onclick=()=>{if(boI<14){boI++;bossRender()}else{mark();document.getElementById("bossFeedback").innerHTML='<div class="result"><h2>🏆 ENERGY BOSS DEFEATED!</h2><div class="bigscore">'+score+'</div><p>Rank: <b>'+document.getElementById("rank").textContent+"</b></p><p>You completed the Energy Master relief mission.</p></div>"}};
+update();
+</script>
+</body>
+</html>
